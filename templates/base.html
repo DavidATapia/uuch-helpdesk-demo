@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}UUCH Help Desk{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-masthead">
+      <div class="masthead-inner">
+        <a class="masthead-logo" href="{{ url_for('request_ticket') }}">
+          <img src="{{ uuch.logo_url }}" alt="{{ uuch.name }}">
+        </a>
+        <div class="masthead-copy">
+          <strong>{{ settings.church_name }}</strong>
+          <span>{{ uuch.tagline }}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary">
+        <a class="brand" href="{{ url_for('request_ticket') }}">
+          <span class="brand-mark" aria-hidden="true">UU</span>
+          <span>
+            <strong>{{ settings.church_name }}</strong>
+            <small>Request intake</small>
+          </span>
+        </a>
+        <nav class="nav-links">
+          <a class="{{ 'active' if request.endpoint == 'request_ticket' else '' }}" {% if request.endpoint == 'request_ticket' %}aria-current="page"{% endif %} href="{{ url_for('request_ticket') }}">New Request</a>
+          <a class="{{ 'active' if request.endpoint in ['tickets', 'ticket_detail', 'staff_login'] else '' }}" {% if request.endpoint in ['tickets', 'ticket_detail', 'staff_login'] %}aria-current="page"{% endif %} href="{{ url_for('tickets') }}">Dashboard</a>
+          {% if staff_logged_in %}
+            <a class="{{ 'active' if request.endpoint == 'notifications' else '' }}" {% if request.endpoint == 'notifications' %}aria-current="page"{% endif %} href="{{ url_for('notifications') }}">Notifications</a>
+            <a class="{{ 'active' if request.endpoint == 'settings_page' else '' }}" {% if request.endpoint == 'settings_page' %}aria-current="page"{% endif %} href="{{ url_for('settings_page') }}">Settings</a>
+          {% endif %}
+        </nav>
+        {% if staff_logged_in %}
+          <form class="logout-form" method="post" action="{{ url_for('staff_logout') }}">
+            <button type="submit">Sign Out</button>
+          </form>
+        {% endif %}
+      </aside>
+
+      <main class="main" id="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-stack" aria-live="polite">
+              {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-stripe" aria-hidden="true"></div>
+      <div class="footer-inner">
+        <section>
+          <h2>{{ uuch.name }}</h2>
+          <p>{{ uuch.address }}</p>
+          <p>{{ uuch.service_time }}</p>
+          <p>{{ uuch.phone }} · <a href="mailto:{{ uuch.email }}">{{ uuch.email }}</a></p>
+        </section>
+        <nav aria-label="Footer">
+          <a href="{{ uuch.website_url }}">UUCH.org</a>
+          <a href="{{ uuch.contact_url }}">Contact</a>
+          <a href="{{ uuch.donate_url }}">Donate</a>
+          <a href="{{ uuch.accessibility_url }}">Accessibility</a>
+          <a href="{{ uuch.privacy_url }}">Privacy</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

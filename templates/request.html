@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}New Request - UUCH Help Desk{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Request portal</p>
+    <h1>Submit a Help Request</h1>
+    <p class="page-intro">Fields marked <span class="required-inline">required</span> help staff route and follow up on the request.</p>
+  </div>
+  <a class="button ghost" href="{{ url_for('tickets') }}">Staff Sign In</a>
+</section>
+
+{% if errors %}
+  <div class="form-errors" role="alert">
+    {% for error in errors %}
+      <p>{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<section class="request-layout">
+  <form class="form-surface" method="post">
+    <div class="privacy-notice">
+      <strong>Privacy and urgent needs</strong>
+      <p>Please do not include Social Security numbers, financial account details, medical records, or other highly sensitive information. {{ settings.public_contact_instructions }}</p>
+    </div>
+
+    <div class="demo-limit-notice {{ 'limit-reached' if ticket_limit_reached else '' }}">
+      <strong>Demo ticket limit</strong>
+      <p>{{ ticket_count }} of {{ max_tickets }} ticket slots are currently used.</p>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        <span>Name <em class="required-marker">Required</em></span>
+        <input name="requester_name" value="{{ form.get('requester_name', '') }}" autocomplete="name" required>
+      </label>
+
+      <label>
+        <span>Email or Phone Number <em class="required-marker">Required</em></span>
+        <input name="contact" value="{{ form.get('contact', '') }}" required>
+      </label>
+
+      <label>
+        <span>Category <em class="required-marker">Required</em></span>
+        <select name="category" required>
+          {% for category in categories %}
+            <option value="{{ category }}" {{ 'selected' if form.get('category') == category or (not form.get('category') and loop.first) else '' }}>{{ category }}</option>
+          {% endfor %}
+        </select>
+        <small class="field-help">Choose the closest match. Staff can reroute it later.</small>
+      </label>
+
+      <label>
+        <span>Priority</span>
+        <select name="priority">
+          {% for priority in priorities %}
+            <option value="{{ priority }}" {{ 'selected' if form.get('priority', 'Normal') == priority else '' }}>{{ priority }}</option>
+          {% endfor %}
+        </select>
+        <small class="field-help">Use Urgent only for time-sensitive or safety-impacting needs.</small>
+      </label>
+
+      <label>
+        <span>Ministry or Team</span>
+        <select name="ministry">
+          <option value="" {{ 'selected' if not form.get('ministry') else '' }}>Not sure</option>
+          {% for team in request_team_choices %}
+            <option value="{{ team }}" {{ 'selected' if form.get('ministry') == team else '' }}>{{ team }}</option>
+          {% endfor %}
+        </select>
+        <small class="field-help">Choose the closest team if you know it.</small>
+      </label>
+
+      <label>
+        <span>Location</span>
+        <input name="location" value="{{ form.get('location', '') }}">
+      </label>
+    </div>
+
+    <label>
+      <span>Request Title <em class="required-marker">Required</em></span>
+      <input name="title" value="{{ form.get('title', '') }}" required>
+    </label>
+
+    <label>
+      <span>Description <em class="required-marker">Required</em></span>
+      <textarea name="description" rows="7" required>{{ form.get('description', '') }}</textarea>
+    </label>
+
+    <div class="attachment-placeholder">
+      <span>Attachment</span>
+      <strong>No upload needed for this demo</strong>
+    </div>
+
+    <div class="form-actions">
+      <button class="button primary" type="submit" {{ 'disabled' if ticket_limit_reached else '' }}>Submit Request</button>
+    </div>
+  </form>
+
+  <aside class="intake-summary" aria-label="Request routing">
+    <h2>Common Routing Examples</h2>
+    <div class="routing-list">
+      <div>
+        <span class="category-dot facilities"></span>
+        <p><strong>Property / Safety</strong><small>Rooms, setup, equipment, building, and safety issues</small></p>
+      </div>
+      <div>
+        <span class="category-dot media"></span>
+        <p><strong>Technology</strong><small>Computers, presentation, sound, streaming, and systems</small></p>
+      </div>
+      <div>
+        <span class="category-dot care"></span>
+        <p><strong>Care / Pastoral Care</strong><small>Follow-up, care needs, and confidential routing</small></p>
+      </div>
+      <div>
+        <span class="category-dot admin"></span>
+        <p><strong>Stewardship / Finance</strong><small>Forms, reimbursements, pledge, and office questions</small></p>
+      </div>
+    </div>
+  </aside>
+</section>
+{% endblock %}

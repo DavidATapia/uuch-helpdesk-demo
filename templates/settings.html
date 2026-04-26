@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Demo Settings - UUCH Help Desk{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Demo configuration</p>
+    <h1>Settings</h1>
+  </div>
+  <a class="button ghost" href="{{ url_for('notifications') }}">Notification Log</a>
+</section>
+
+<section class="settings-layout">
+  <form class="settings-panel" method="post">
+    <fieldset class="settings-group">
+      <legend>Ticket / Request Configuration</legend>
+
+      <label>
+        <span>Church or Demo Name</span>
+        <input name="church_name" value="{{ settings.church_name }}" required>
+      </label>
+
+      <label>
+        <span>Public Contact Instructions</span>
+        <textarea name="public_contact_instructions" rows="4">{{ settings.public_contact_instructions }}</textarea>
+      </label>
+
+      <label>
+        <span>Request Category Labels</span>
+        <textarea name="category_labels" rows="9">{{ category_labels }}</textarea>
+        <small class="field-help">Use one category per line. Other will stay available at the bottom automatically.</small>
+      </label>
+
+      <label>
+        <span>Staff Team Labels</span>
+        <textarea name="team_labels" rows="7">{{ team_labels }}</textarea>
+        <small class="field-help">Use one team label per line. Unassigned will stay available automatically.</small>
+      </label>
+    </fieldset>
+
+    <fieldset class="settings-group">
+      <legend>Admin Configuration</legend>
+
+      <div class="form-grid">
+        <label>
+          <span>Staff Notification Recipient</span>
+          <input name="staff_notification_email" value="{{ settings.staff_notification_email }}" required>
+        </label>
+
+        <label>
+          <span>Requester Reply From</span>
+          <input name="requester_reply_email" value="{{ settings.requester_reply_email }}" required>
+        </label>
+      </div>
+
+      <label>
+        <span>Notification Mode</span>
+        <input name="notification_mode" value="{{ settings.notification_mode }}" required>
+      </label>
+
+      <label>
+        <span>Site Admins</span>
+        <textarea name="admin_users" rows="6">{{ admin_users }}</textarea>
+        <small class="field-help">Placeholder only while shared staff password access is active.</small>
+      </label>
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="button primary" type="submit">Save Settings</button>
+    </div>
+  </form>
+
+  <aside class="settings-side">
+    <h2>Current Demo Values</h2>
+    <dl>
+      <div>
+        <dt>Settings File</dt>
+        <dd>demo_settings.json</dd>
+      </div>
+      <div>
+        <dt>Staff Password</dt>
+        <dd>Set with STAFF_PASSWORD</dd>
+      </div>
+      <div>
+        <dt>Email Delivery</dt>
+        <dd>Preview log only</dd>
+      </div>
+      <div>
+        <dt>Admin Access</dt>
+        <dd>Shared staff password, with admin list placeholder</dd>
+      </div>
+    </dl>
+  </aside>
+</section>
+{% endblock %}

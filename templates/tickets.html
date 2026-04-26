@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Staff Dashboard - UUCH Help Desk{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Staff workspace</p>
+    <h1>Ticket Dashboard</h1>
+  </div>
+  <a class="button primary" href="{{ url_for('request_ticket') }}">New Request</a>
+</section>
+
+<section class="metric-row" id="dashboard-summary" aria-label="Ticket metrics">
+  <div class="metric">
+    <span>Total</span>
+    <strong>{{ stats.total }}</strong>
+  </div>
+  <div class="metric">
+    <span>Open</span>
+    <strong>{{ stats.open }}</strong>
+  </div>
+  <div class="metric urgent">
+    <span>Urgent</span>
+    <strong>{{ stats.urgent }}</strong>
+  </div>
+  <div class="metric resolved">
+    <span>Resolved</span>
+    <strong>{{ stats.resolved }}</strong>
+  </div>
+</section>
+
+<form class="filter-bar auto-filter" method="get" action="{{ url_for('tickets') }}#dashboard-summary">
+  <input type="hidden" name="sort" value="{{ sort_state.key }}">
+  <input type="hidden" name="direction" value="{{ sort_state.direction }}">
+  <label>
+    <span>Status</span>
+    <select name="status" aria-label="Filter by status">
+      <option>All</option>
+      {% for status in statuses %}
+        <option value="{{ status }}" {{ 'selected' if filters.status == status else '' }}>{{ status }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    <span>Assignee</span>
+    <select name="assignee" aria-label="Filter by assignee">
+      <option>All</option>
+      {% for assignee in assignees %}
+        <option value="{{ assignee }}" {{ 'selected' if filters.assignee == assignee else '' }}>{{ assignee }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    <span>Priority</span>
+    <select name="priority" aria-label="Filter by priority">
+      <option>All</option>
+      {% for priority in priorities %}
+        <option value="{{ priority }}" {{ 'selected' if filters.priority == priority else '' }}>{{ priority }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label class="search-field">
+    <span>Search</span>
+    <input name="q" value="{{ filters.q }}" placeholder="Ticket, title, requester, ministry">
+  </label>
+  <div class="filter-actions">
+    <button class="sr-only" type="submit">Search Tickets</button>
+    <a class="button ghost" href="{{ url_for('tickets') }}#dashboard-summary">Reset</a>
+  </div>
+</form>
+
+<script>
+  document.querySelectorAll(".auto-filter select").forEach((select) => {
+    select.addEventListener("change", () => {
+      select.form.requestSubmit();
+    });
+  });
+</script>
+
+<section class="table-surface">
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">Staff ticket dashboard results</caption>
+      <thead>
+        <tr>
+          {% for column in sort_columns %}
+            {% set active = sort_state.key == column.key %}
+            {% set next_direction = 'desc' if active and sort_state.direction == 'asc' else 'asc' %}
+            <th scope="col" aria-sort="{{ 'ascending' if active and sort_state.direction == 'asc' else 'descending' if active else 'none' }}">
+              <a
+                class="sort-link {{ 'active' if active else '' }}"
+                href="{{ url_for('tickets', status=filters.status, assignee=filters.assignee, priority=filters.priority, q=filters.q, sort=column.key, direction=next_direction) }}#dashboard-summary"
+              >
+                <span>{{ column.label }}</span>
+                <span class="sort-arrow" aria-hidden="true">{{ '↑' if active and sort_state.direction == 'asc' else '↓' if active else '↕' }}</span>
+                <span class="sr-only">
+                  {% if active and sort_state.direction == "asc" %}
+                    Sorted ascending. Activate to sort descending.
+                  {% elif active %}
+                    Sorted descending. Activate to sort ascending.
+                  {% else %}
+                    Activate to sort ascending.
+                  {% endif %}
+                </span>
+              </a>
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for ticket in tickets %}
+          <tr>
+            <td data-label="Ticket"><a class="ticket-link" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">{{ ticket.ticket_number }}</a></td>
+            <td data-label="Request">
+              <strong>{{ ticket.title }}</strong>
+              <small>{{ ticket.requester_name }}{% if ticket.ministry %} / {{ ticket.ministry }}{% endif %}</small>
+            </td>
+            <td data-label="Category">{{ ticket.category }}</td>
+            <td data-label="Priority"><span class="badge priority-{{ ticket.priority|lower }}">{{ ticket.priority }}</span></td>
+            <td data-label="Status"><span class="badge status-{{ ticket.status|lower|replace(' ', '-') }}">{{ ticket.status }}</span></td>
+            <td data-label="Assignee">{{ ticket.assignee }}</td>
+            <td data-label="Updated">{{ ticket.updated_at|pretty_datetime }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="7" class="empty-state">No tickets match the current filters. <a href="{{ url_for('tickets') }}#dashboard-summary">Reset filters</a>.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

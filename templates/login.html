@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Staff Sign In - UUCH Help Desk{% endblock %}
+
+{% block content %}
+<section class="login-shell">
+  <form class="login-panel" method="post">
+    <input type="hidden" name="next" value="{{ next_url }}">
+    <p class="eyebrow">Staff area</p>
+    <h1>Sign In</h1>
+    <p class="page-intro">For staff and designated volunteers.</p>
+    <label>
+      <span>Password</span>
+      <input type="password" name="password" autocomplete="current-password" autofocus required>
+    </label>
+    <button class="button primary full" type="submit">Open Dashboard</button>
+  </form>
+</section>
+{% endblock %}

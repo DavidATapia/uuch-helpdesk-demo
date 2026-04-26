@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Request Received - UUCH Help Desk{% endblock %}
+
+{% block content %}
+<section class="confirmation-shell">
+  <div class="confirmation-panel">
+    <p class="eyebrow">Request received</p>
+    <h1>{{ ticket.ticket_number }}</h1>
+    <p class="confirmation-copy">
+      Your request has been submitted and is ready for staff review. Keep this number for follow-up.
+    </p>
+
+    <div class="confirmation-summary">
+      <div>
+        <span>Request</span>
+        <strong>{{ ticket.title }}</strong>
+      </div>
+      <div>
+        <span>Category</span>
+        <strong>{{ ticket.category }}</strong>
+      </div>
+      <div>
+        <span>Priority</span>
+        <strong>{{ ticket.priority }}</strong>
+      </div>
+      <div>
+        <span>Submitted</span>
+        <strong>{{ ticket.created_at|pretty_datetime }}</strong>
+      </div>
+    </div>
+
+    <div class="next-step">
+      <strong>Next step</strong>
+      <p>Church staff will triage the request, assign it to the right team, and follow up using the contact information provided.</p>
+    </div>
+
+    <div class="privacy-reminder">
+      <strong>Privacy reminder</strong>
+      <p>If you need to share sensitive pastoral, financial, medical, or emergency information, please contact church leadership directly instead of adding it to a ticket. {{ settings.public_contact_instructions }}</p>
+    </div>
+
+    <div class="confirmation-actions">
+      <a class="button primary" href="{{ url_for('request_ticket') }}">Submit Another Request</a>
+      <a class="button ghost" href="{{ url_for('staff_login') }}">Staff Sign In</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

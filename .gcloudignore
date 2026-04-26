@@ -1,0 +1,9 @@
+.git/
+.gitignore
+.gcloudignore
+__pycache__/
+*.pyc
+instance/
+server.log
+.env
+PRIVATE_NOTES.md

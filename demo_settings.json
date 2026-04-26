@@ -1,0 +1,39 @@
+{
+  "church_name": "UUCH Help Desk",
+  "staff_notification_email": "helpdesk-staff@uuch.org",
+  "requester_reply_email": "helpdesk@uuch.org",
+  "notification_mode": "Preview only",
+  "public_contact_instructions": "For emergencies or immediate safety concerns, contact local emergency services or church leadership directly.",
+  "category_labels": [
+    "Care / Pastoral Care",
+    "Care Committee",
+    "Property / Safety",
+    "Technology",
+    "Worship / Music",
+    "Children and Youth RE",
+    "Adult RE",
+    "Hospitality",
+    "Membership",
+    "Social Justice",
+    "Stewardship / Finance",
+    "Events / Calendar",
+    "General",
+    "Other"
+  ],
+  "team_labels": [
+    "Unassigned",
+    "Technology Team",
+    "Safety Team",
+    "Media Team",
+    "Care Team",
+    "Office Admin",
+    "Events Team"
+  ],
+  "admin_users": [
+    "Staff",
+    "Shalin",
+    "Treo",
+    "Wayne",
+    "David"
+  ]
+}

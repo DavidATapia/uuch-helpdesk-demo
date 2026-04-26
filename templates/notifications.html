@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Notification Log - UUCH Help Desk{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Preview only</p>
+    <h1>Notification Log</h1>
+  </div>
+  <a class="button ghost" href="{{ url_for('settings_page') }}">Notification Settings</a>
+</section>
+
+<section class="notification-layout">
+  <div class="notification-summary">
+    <h2>Delivery Mode</h2>
+    <strong>{{ settings.notification_mode }}</strong>
+    <p>These entries show the emails or messages the system would send in a later production phase.</p>
+  </div>
+
+  <div class="notification-list">
+    {% for item in notifications %}
+      <article class="notification-card">
+        <header>
+          <div>
+            <span class="badge audience-{{ item.audience|lower }}">{{ item.audience }}</span>
+            <a href="{{ url_for('ticket_detail', ticket_id=item.ticket_id) }}">{{ item.ticket_number }}</a>
+          </div>
+          <small>{{ item.created_at|pretty_datetime }}</small>
+        </header>
+        <h2>{{ item.subject }}</h2>
+        <p class="recipient">To: {{ item.recipient }}</p>
+        <pre>{{ item.body }}</pre>
+        <footer>
+          <span>{{ item.status }}</span>
+          <span>{{ item.title }}</span>
+        </footer>
+      </article>
+    {% else %}
+      <p class="empty-state">No notifications have been queued yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
